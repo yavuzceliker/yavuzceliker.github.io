@@ -1,7 +1,9 @@
+
+<!DOCTYPE html>
 <html lang="tr">
 <head>
+    <meta charset="UTF-8">
     <title>Youtube MP3/Video Converter</title>
-    <meta charset="utf-8">
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 </head>
 <body>
@@ -57,7 +59,7 @@
                         if (convertType == "videos")
                             ConvertRes = ConvertRes == "18" ? "360" : ConvertRes == "22" ? "720" : ConvertRes;
 
-                        buttons += (i!=0?" - ":"")+"<a href='" + link + "'>" + ConvertRes + (convertType == "mp3" ? "kbps" : "p") + "</a>";
+                        buttons += (i != 0 ? " - " : "") + "<a href='" + link + "'>" + ConvertRes + (convertType == "mp3" ? "kbps" : "p") + "</a>";
                     }
 
                     if (buttons == "") {
