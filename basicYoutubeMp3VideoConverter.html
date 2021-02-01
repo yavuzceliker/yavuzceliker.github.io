@@ -1,0 +1,81 @@
+<html>
+<head>
+    <title>Youtube MP3/Video Converter</title>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+</head>
+<body>
+    <input type="text" id="videoID" placeholder="Youtube video linki" />
+    <button type="button" class="indir" value="mp3">MP3'e Dönüþtür</button>
+    <button type="button" class="indir" value="videos">Videoya Dönüþtür</button>
+
+    <div id="butonlar"></div>
+
+    <div id='yukleniyor' style="width: 100%; height: 100%; position: fixed; z-index: 10000; top: 0; left: 0; background: #E4F0F0 url('https://i.giphy.com/media/xTk9ZvMnbIiIew7IpW/giphy.webp') no-repeat center; "></div>
+
+    <script>
+        $(document).ready(function () {
+            $("#yukleniyor").hide();
+        });
+
+        $(".indir").click(function () {
+
+            var videoIDIndir = $("#videoID").val();
+            var convertTypeIndir = $(this).val();
+
+            if (videoIDIndir == "") {
+                alert("Video linki zorunludur.");
+                return;
+            }
+
+            convert(videoIDIndir, convertTypeIndir);
+
+        });
+
+        function convert(videoID, convertType) {
+
+            $("#yukleniyor").show();
+
+            var start = videoID.indexOf("?v=") + 3;
+            if (start > 3)
+                videoID = videoID.substring(start, start + 11);
+
+            start = videoID.indexOf("https://youtu.be/") + 17;
+            if (start >= 17)
+                videoID = videoID.substring(start, start + 11);
+
+
+            $.ajax({
+                url: "https://www.yt-download.org/api/button/" + convertType + "/" + videoID,
+                type: 'get',
+                success: function (string) {
+                    var buttons = "";
+                    var html = $.parseHTML(string);
+                    for (var i = 0; i < $(html).find("a").length; i++) {
+                        var link = $(html).find("a").get(i);
+                        var ConvertRes = (link + "").split("/")[6];
+                        if (convertType == "videos")
+                            ConvertRes = ConvertRes == "18" ? "360" : ConvertRes == "22" ? "720" : ConvertRes;
+
+                        buttons += (i!=0?" - ":"")+"<a href='" + link + "'>" + ConvertRes + (convertType == "mp3" ? "kbps" : "p") + "</a>";
+                    }
+
+                    if (buttons == "") {
+                        $("#yukleniyor").hide();
+                        alert("Link hatalý olabilir.");
+                        return;
+                    }
+
+                    $("#butonlar").html(buttons);
+                    $("#yukleniyor").hide();
+
+                },
+                error: function () {
+                    $("#yukleniyor").hide();
+                    alert("Bir hata oluþtu.");
+                }
+            });
+        }
+    </script>
+
+</body>
+</html>
